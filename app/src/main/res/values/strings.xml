@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">DailyTrackerApp</string>
+    <string name="mood_of_the_user">Mood of the user </string>
+    <string name="add_comment_button">Add Comment Button</string>
+    <string name="mood_history_button">Mood History Button </string>
 </resources>
