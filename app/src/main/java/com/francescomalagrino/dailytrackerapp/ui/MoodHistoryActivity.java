@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.francescomalagrino.dailytrackerapp.R;
+import com.francescomalagrino.dailytrackerapp.adapter.MoodsAdapter;
 
 import java.util.ArrayList;
 

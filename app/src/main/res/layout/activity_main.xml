@@ -33,13 +33,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_margin="16dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="367dp"
+        android:layout_marginLeft="367dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
         android:background="@null"
         android:contentDescription="@string/mood_history_button"
-        android:src="@drawable/ic_history_black"
-        />
+        android:src="@drawable/ic_history_black" />
 
     <ImageButton
         android:id="@+id/imageButton"
