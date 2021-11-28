@@ -1,17 +1,22 @@
 package com.francescomalagrino.dailytrackerapp.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.francescomalagrino.dailytrackerapp.R;
 import com.francescomalagrino.dailytrackerapp.adapter.MoodsAdapter;
+import com.francescomalagrino.dailytrackerapp.data.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 
 public class MoodHistoryActivity extends AppCompatActivity {
+
     private static final String TAG = "MoodHistoryActivity";
 
     private RecyclerView moodsRecyclerView;
@@ -26,5 +31,20 @@ public class MoodHistoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mood_history);
+        Log.d(TAG, "onCreate: MoodHistoryActivity");
+
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        currentDay = mPreferences.getInt(SharedPreferencesHelper.KEY_CURRENT_DAY, 1);
+
+        moodsRecyclerView = findViewById(R.id.reycler_moods);
+        moodsRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true));
+
+        for (int i = 0; i < currentDay; i++) {
+            moods.add(mPreferences.getInt("KEY_MOOD" + i, 3));
+            comments.add(mPreferences.getString("KEY_COMMENT" + i, ""));
+        }
+
+        moodsAdapter = new MoodsAdapter(this, currentDay, moods, comments);
+        moodsRecyclerView.setAdapter(moodsAdapter);
     }
 }

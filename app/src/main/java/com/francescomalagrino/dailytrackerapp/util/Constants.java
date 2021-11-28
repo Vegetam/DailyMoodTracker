@@ -22,4 +22,9 @@ public class Constants {
                 R.color.colorSuperHappy};
 
 
+    public static int[] moodSoundsArray = {R.raw.note_sad,
+            R.raw.note_disappointed,
+            R.raw.note_normal,
+            R.raw.note_happy,
+            R.raw.note_super_happy};
 }
