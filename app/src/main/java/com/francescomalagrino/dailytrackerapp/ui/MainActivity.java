@@ -27,6 +27,7 @@ import com.francescomalagrino.dailytrackerapp.R;
 import com.francescomalagrino.dailytrackerapp.data.SharedPreferencesHelper;
 import com.francescomalagrino.dailytrackerapp.receiver.UpdateDayReceiver;
 import com.francescomalagrino.dailytrackerapp.util.Constants;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 
 import java.util.Calendar;
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     private int currentDay;
     private int currentMoodIndex;
     private String currentComment;
-
+    private  FirebaseAnalytics mFirebaseAnalytics;
 
 
 
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         currentComment = mPreferences.getString(SharedPreferencesHelper.KEY_CURRENT_COMMENT, "");
 
 
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         changeUiForMood(currentMoodIndex);
         scheduleAlarm();
