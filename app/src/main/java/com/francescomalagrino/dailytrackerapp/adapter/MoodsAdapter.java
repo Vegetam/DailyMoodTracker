@@ -2,6 +2,7 @@ package com.francescomalagrino.dailytrackerapp.adapter;
 
 import android.content.Context;
 import android.provider.SyncStateContract;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,25 +16,25 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.francescomalagrino.dailytrackerapp.R;
+import com.francescomalagrino.dailytrackerapp.data.Mood;
 import com.francescomalagrino.dailytrackerapp.util.Constants;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class MoodsAdapter extends RecyclerView.Adapter<MoodsAdapter.MoodViewHolder> {
 
     private static final String TAG = "MoodsAdapter";
     private Context mContext;
-    private int mCurrentDay;
-    private ArrayList<Integer> mMoods;
-    private ArrayList<String> mComments;
+    private ArrayList<Mood> mMoods;
 
     //*** Constructor*
-    public MoodsAdapter(Context context, int currentDay, ArrayList<Integer> moods, ArrayList<String> comments) {
+    public MoodsAdapter(Context context, ArrayList<Mood> moods) {
         this.mContext = context;
-        this.mCurrentDay = currentDay;
         this.mMoods = moods;
-        this.mComments = comments;
+
     }
 
     @NonNull
@@ -44,24 +45,27 @@ public class MoodsAdapter extends RecyclerView.Adapter<MoodsAdapter.MoodViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MoodViewHolder moodViewHolder, int i) {
-        switch (i) {
-            case 1:
-                moodViewHolder.daysTextView.setText(R.string.yesterday);
-                break;
-            case 0:
-                moodViewHolder.daysTextView.setText(R.string.today);
-                break;
-            default:
-                String daysAgoText = i + " " + mContext.getString(R.string.days_ago);
-                moodViewHolder.daysTextView.setText(daysAgoText);
+    public void onBindViewHolder(@NonNull MoodViewHolder moodViewHolder, int i)
+    {
+        Mood mood = mMoods.get(i);
+        Date currentDate = Calendar.getInstance().getTime();
+       // Log.e("mood", currentDate.getDay() + "-" + mood.getMoodDate() + "-" + i);
+        if(currentDate.getDay() == mood.getMoodDate()) {
+            moodViewHolder.daysTextView.setText(R.string.today);
+        } else if(currentDate.getDay() -1 == mood.getMoodDate()){
+            moodViewHolder.daysTextView.setText(R.string.yesterday);
+        } else {
+            int day = currentDate.getDay() - mood.getMoodDate();
+            String daysAgoText = day + " " + mContext.getString(R.string.days_ago);
+            moodViewHolder.daysTextView.setText(daysAgoText);
         }
 
-        int mood = mMoods.get(i);
+
+
         LinearLayout.LayoutParams leftLayoutParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
         LinearLayout.LayoutParams rightLayoutParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
         float weight;
-        switch (mood) {
+        switch (mood.getMoodStatus()) {
             case 0:
                 weight = 0.2f;
                 break;
@@ -84,11 +88,11 @@ public class MoodsAdapter extends RecyclerView.Adapter<MoodsAdapter.MoodViewHold
         rightLayoutParams.weight = 1.0f - weight;
         moodViewHolder.leftFrameLayout.setLayoutParams(leftLayoutParams);
         moodViewHolder.rightFrameLayout.setLayoutParams(rightLayoutParams);
-        moodViewHolder.leftFrameLayout.setBackgroundResource(Constants.moodColorsArray[mood]);
+        moodViewHolder.leftFrameLayout.setBackgroundResource(Constants.moodColorsArray[mood.getMoodStatus()]);
 
 
         //** if there's a comment, show the icon and a toast on click*
-        final String comment = mComments.get(i);
+        final String comment = mood.getComment();
         if (comment != null && !comment.isEmpty()) {
             moodViewHolder.commentButton.setVisibility(View.VISIBLE);
             moodViewHolder.commentButton.setOnClickListener(new View.OnClickListener() {

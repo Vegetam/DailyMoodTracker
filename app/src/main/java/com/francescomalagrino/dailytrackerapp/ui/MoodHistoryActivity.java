@@ -11,9 +11,12 @@ import android.util.Log;
 
 import com.francescomalagrino.dailytrackerapp.R;
 import com.francescomalagrino.dailytrackerapp.adapter.MoodsAdapter;
+import com.francescomalagrino.dailytrackerapp.data.Mood;
 import com.francescomalagrino.dailytrackerapp.data.SharedPreferencesHelper;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MoodHistoryActivity extends AppCompatActivity {
 
@@ -25,26 +28,28 @@ public class MoodHistoryActivity extends AppCompatActivity {
     private SharedPreferences mPreferences;
     private ArrayList<Integer> moods = new ArrayList<>();
     private ArrayList<String> comments = new ArrayList<>();
-    private int currentDay;
+
+    private ArrayList<Mood> mMood = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mood_history);
-        Log.d(TAG, "onCreate: MoodHistoryActivity");
-
+       // Log.d(TAG, "onCreate: MoodHistoryActivity");
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        currentDay = mPreferences.getInt(SharedPreferencesHelper.KEY_CURRENT_DAY, 1);
-
         moodsRecyclerView = findViewById(R.id.reycler_moods);
         moodsRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true));
-
-        for (int i = 0; i < currentDay; i++) {
-            moods.add(mPreferences.getInt("KEY_MOOD" + i, 3));
-            comments.add(mPreferences.getString("KEY_COMMENT" + i, ""));
+        Gson gson = new Gson();
+        for (int i=0; i<=7; i++) {
+           if(mPreferences.contains(SharedPreferencesHelper.KEY_MOOD + i)) {
+               Mood mood = gson.fromJson(mPreferences.getString(SharedPreferencesHelper.KEY_MOOD + i, ""), Mood.class);
+               mMood.add(mood);
+           }
         }
 
-        moodsAdapter = new MoodsAdapter(this, currentDay, moods, comments);
+
+
+        moodsAdapter = new MoodsAdapter(this,mMood);
         moodsRecyclerView.setAdapter(moodsAdapter);
     }
 }

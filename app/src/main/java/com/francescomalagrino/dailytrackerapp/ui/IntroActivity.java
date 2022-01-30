@@ -23,7 +23,6 @@ import com.francescomalagrino.dailytrackerapp.util.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class IntroActivity extends AppCompatActivity {
 
     private static final String TAG = "IntroActivity";
@@ -94,30 +93,27 @@ public class IntroActivity extends AppCompatActivity {
 
         // next button click Listner
 
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnNext.setOnClickListener(v -> {
 
-                position = screenPager.getCurrentItem();
-                if (position < mList.size()) {
+            position = screenPager.getCurrentItem();
+            if (position < mList.size()) {
 
-                    position++;
-                    screenPager.setCurrentItem(position);
-
-
-                }
-
-                if (position == mList.size() - 1) { // when we rech to the last screen
-
-                    // TODO : show the GETSTARTED Button and hide the indicator and the next button
-
-                    loadLastScreen();
-
-
-                }
+                position++;
+                screenPager.setCurrentItem(position);
 
 
             }
+
+            if (position == mList.size() - 1) { // when we rech to the last screen
+
+                // TODO : show the GETSTARTED Button and hide the indicator and the next button
+
+                loadLastScreen();
+
+
+            }
+
+
         });
 
         // tab layout add change listener
@@ -150,33 +146,25 @@ public class IntroActivity extends AppCompatActivity {
 
         // Get Started button click listener
 
-        btnGetStarted.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnGetStarted.setOnClickListener(v -> {
 
 
-                //open main activity
+            //open main activity
 
-                Intent mainActivity = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(mainActivity);
-                // also we need to save a boolean value to storage so next time when the user run the app
-                // we could know that he is already checked the intro screen activity
-                // i'm going to use shared preferences to that process
-                savePrefsData();
-                finish();
+            Intent mainActivity = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(mainActivity);
+            // also we need to save a boolean value to storage so next time when the user run the app
+            // we could know that he is already checked the intro screen activity
+            // i'm going to use shared preferences to that process
+            savePrefsData();
+            finish();
 
 
-            }
         });
 
         // skip button click listener
 
-        tvSkip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                screenPager.setCurrentItem(mList.size());
-            }
-        });
+        tvSkip.setOnClickListener(v -> screenPager.setCurrentItem(mList.size()));
 
 
     }

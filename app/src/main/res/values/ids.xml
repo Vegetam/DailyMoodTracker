@@ -2,4 +2,5 @@
 <resources>
     <item name="btn_mood_history" type="id" />
     <item name="shareButton" type="id" />
+    <item name="commentEditText" type="id" />
 </resources>

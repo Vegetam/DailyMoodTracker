@@ -3,10 +3,8 @@ package com.francescomalagrino.dailytrackerapp.ui;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GestureDetectorCompat;
 
-import android.app.AlarmManager;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,8 +22,8 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.francescomalagrino.dailytrackerapp.R;
+import com.francescomalagrino.dailytrackerapp.data.Mood;
 import com.francescomalagrino.dailytrackerapp.data.SharedPreferencesHelper;
-import com.francescomalagrino.dailytrackerapp.receiver.UpdateDayReceiver;
 import com.francescomalagrino.dailytrackerapp.util.Constants;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -46,13 +44,14 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     private RelativeLayout parentRelativeLayout;
 
     private SharedPreferences mPreferences;
-    private int currentDay;
+    public int currentDay;
     private int currentMoodIndex;
     private String currentComment;
     private  FirebaseAnalytics mFirebaseAnalytics;
+    private Mood mood = new Mood();
 
 
-
+    @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +68,9 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         mDetector = new GestureDetectorCompat(this, this);
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        currentDay = mPreferences.getInt(SharedPreferencesHelper.KEY_CURRENT_DAY, 1);
+       // int defaultDay = Calendar.getInstance().getTime().getDay();
+        currentDay =  Calendar.getInstance().getTime().getDay();
+       // Log.e("onCreate: ", currentDay + "");
         currentMoodIndex = mPreferences.getInt(SharedPreferencesHelper.KEY_CURRENT_MOOD, 3);
         currentComment = mPreferences.getString(SharedPreferencesHelper.KEY_CURRENT_COMMENT, "");
 
@@ -77,46 +78,40 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         changeUiForMood(currentMoodIndex);
-        scheduleAlarm();
+        mood.setMoodStatus(currentMoodIndex);
+        mood.setMoodDate(currentDay);
+        SharedPreferencesHelper.saveMood(mPreferences, mood);
 
 
         //*****************************Add comment to the Mood********************************/
 
-        addCommentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(LOG_TAG, "Button clicked!");
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                final EditText editText = new EditText(MainActivity.this);
+        addCommentButton.setOnClickListener(view -> {
+          //  Log.d(LOG_TAG, "Button clicked!");
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            final EditText editText = new EditText(MainActivity.this);
+            editText.setId(R.id.commentEditText);
+
+            builder.setMessage("Comment\uD83E\uDD14 \uD83D\uDCDD").setView(editText)
+                    .setPositiveButton("CONFIRM", (dialog, which) -> {
+                        if (!editText.getText().toString().isEmpty()) {
+                            mood.setComment(editText.getText().toString());
+                            SharedPreferencesHelper.saveMood(mPreferences,mood);
+                        }
 
 
-                builder.setMessage("Comment\uD83E\uDD14 \uD83D\uDCDD").setView(editText)
-                        .setPositiveButton("CONFIRM", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                if (!editText.getText().toString().isEmpty()) {
-                                    SharedPreferencesHelper.saveComment(editText.getText().toString(), currentDay, mPreferences);
-                                }
+                        dialog.dismiss();
+
+                        Toast.makeText(MainActivity.this, "Comment Saved", Toast.LENGTH_SHORT).show();
+
+                    });
+            builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+                dialog.cancel();
+
+                Toast.makeText(MainActivity.this, "Comment Canceled", Toast.LENGTH_SHORT).show();
+            })
+                    .create().show();
 
 
-                                dialog.dismiss();
-
-                                Toast.makeText(MainActivity.this, "Comment Saved", Toast.LENGTH_SHORT).show();
-
-                            }
-                        });
-                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-
-                        Toast.makeText(MainActivity.this, "Comment Canceled", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                        .create().show();
-
-
-            }
         });
 
 
@@ -129,16 +124,13 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         });
 
         //*Share your mood Button*/
-        shareAppButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(LOG_TAG, "Button clicked!");
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "Hello! I would like to share with you my mood of the day from MoodTracker App.Today my Mood is... ");
-                sendIntent.setType("text/plain");
-                startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.send_To)));
-            }
+        shareAppButton.setOnClickListener(v -> {
+         //   Log.d(LOG_TAG, "Button clicked!");
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "Hello! I would like to share with you my mood of the day from MoodTracker App.Today my Mood is... ");
+            sendIntent.setType("text/plain");
+            startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.send_To)));
         });
 
     }
@@ -180,7 +172,9 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
             if (currentMoodIndex < 4) {
                 currentMoodIndex++;
                 changeUiForMood(currentMoodIndex);
-                SharedPreferencesHelper.saveMood(currentMoodIndex, currentDay, mPreferences);
+                mood.setMoodStatus(currentMoodIndex);
+                mood.setMoodDate(currentDay);
+                SharedPreferencesHelper.saveMood(mPreferences, mood);
 
             }
 
@@ -191,7 +185,9 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
             if (currentMoodIndex > 0) {
                 currentMoodIndex--;
                 changeUiForMood(currentMoodIndex);
-                SharedPreferencesHelper.saveMood(currentMoodIndex, currentDay, mPreferences);
+                mood.setMoodStatus(currentMoodIndex);
+                mood.setMoodDate(currentDay);
+                SharedPreferencesHelper.saveMood(mPreferences, mood);
             }
         }
         return true;
@@ -205,26 +201,6 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         mediaPlayer.start();
     }
 
-
-    //* Scheduling alarm to save mood everyday
-    private void scheduleAlarm() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 23);
-        calendar.set(Calendar.MINUTE, 59);
-        calendar.set(Calendar.SECOND, 59);
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, UpdateDayReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        if (alarmManager != null) {
-            alarmManager.setInexactRepeating(
-                    AlarmManager.RTC_WAKEUP,
-                    calendar.getTimeInMillis(),
-                    AlarmManager.INTERVAL_DAY,
-                    pendingIntent
-            );
-        }
-    }
 
 
     @Override
