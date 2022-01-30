@@ -2,15 +2,26 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.francescomalagrino.dailytrackerapp">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.DailyTrackerApp">
+        android:theme="@style/AppTheme">
+
+
+        <receiver
+            android:name=".receiver.UpdateDayReceiver"
+            android:enabled="true"
+            android:exported="true" />
+
         <activity android:name=".ui.MoodHistoryActivity" />
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".ui.MainActivity" />
+        <activity android:name=".ui.IntroActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

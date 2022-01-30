@@ -23,6 +23,7 @@ import com.francescomalagrino.dailytrackerapp.util.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class IntroActivity extends AppCompatActivity {
 
     private static final String TAG = "IntroActivity";
