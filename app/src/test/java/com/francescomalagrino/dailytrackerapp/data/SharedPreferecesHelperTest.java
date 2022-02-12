@@ -6,11 +6,9 @@ import com.google.gson.Gson;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.listeners.MockitoListener;
 
 import static org.junit.Assert.*;
 
@@ -27,7 +25,8 @@ public class SharedPreferecesHelperTest {
         assertEquals(4, 2 + 2);
     }
 
-    @Mock SharedPreferences mSharedPreferences;
+    @Mock
+    SharedPreferences mSharedPreferences;
     @Mock SharedPreferences.Editor mEditor;
 
      Mood mood = new Mood();
@@ -40,7 +39,6 @@ public class SharedPreferecesHelperTest {
         mood.setMoodDate(0);
         mood.setMoodStatus(0);
         mood.setComment("Comment");
-
         String moodString = gson.toJson(mood);
         Mockito.when(mSharedPreferences.getString(SharedPreferencesHelper.KEY_MOOD + 0, "")).thenReturn(moodString);
         Mockito.when(mSharedPreferences.edit()).thenReturn(mEditor);

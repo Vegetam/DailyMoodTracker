@@ -1,38 +1,25 @@
 package com.francescomalagrino.dailytrackerapp.ui;
 
-import android.app.Activity;
-import android.app.Instrumentation;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 
 import androidx.test.InstrumentationRegistry;
 import androidx.test.core.app.ActivityScenario;
-import androidx.test.espresso.Espresso;
 import androidx.test.espresso.contrib.RecyclerViewActions;
-import androidx.test.espresso.contrib.ViewPagerActions;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.francescomalagrino.dailytrackerapp.ui.MainActivity;
 import com.francescomalagrino.dailytrackerapp.R;
 import com.francescomalagrino.dailytrackerapp.utils.DeleteViewAction;
-import com.francescomalagrino.dailytrackerapp.utils.ToastMatcher;
-import com.google.android.gms.common.data.DataBuffer;
 
-import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-
-import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.swipeDown;
@@ -42,21 +29,13 @@ import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
-import static androidx.test.espresso.matcher.ViewMatchers.hasBackground;
-import static androidx.test.espresso.matcher.ViewMatchers.hasTextColor;
-import static androidx.test.espresso.matcher.ViewMatchers.isClickable;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
-import static com.google.android.gms.common.data.DataBufferUtils.hasData;
-import static com.google.android.material.internal.ContextUtils.getActivity;
-import static java.util.EnumSet.allOf;
-import static org.hamcrest.CoreMatchers.instanceOf;
+import static com.francescomalagrino.dailytrackerapp.utils.EspressoTestsMatchers.withDrawable;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 @RunWith(AndroidJUnit4.class)
 public class IntroActivityTest {
@@ -97,12 +76,13 @@ public class IntroActivityTest {
     @Test
     public void swipeUpDownLeftRight()  {
     onView(withId(R.id.my_mood)).perform(swipeUp());
-      //  onView(withId(R.id.my_mood)).check(matches((Color.parseColor("#F8EC50"))))
-        //  //create a custom background color check;
-       // onView(withId(R.id.my_view)).check(matches(withBackgroundColour(R.color.color_to_check)))
+    onView(withId(R.id.my_mood)).check(matches(withDrawable(R.drawable.smiley_super_happy)));
     onView(withId(R.id.my_mood)).perform(swipeDown());
+    onView(withId(R.id.my_mood)).check(matches(withDrawable(R.drawable.smiley_happy)));
     onView(withId(R.id.my_mood)).perform(swipeLeft());
+    onView(withId(R.id.my_mood)).check(matches(withDrawable(R.drawable.smiley_normal)));
     onView(withId(R.id.my_mood)).perform(swipeRight());
+    onView(withId(R.id.my_mood)).check(matches(withDrawable(R.drawable.smiley_disappointed)));
     }
 
     @Test
@@ -150,18 +130,8 @@ public class IntroActivityTest {
 
 
     @Test
-    public void shouldShowToast() {
-        onView(withId(R.id.btn_mood_history)).perform(click());
-        mActivity.onActivity(activity -> {
-            onView(withText("Message")).inRoot(withDecorView(not(is(activity.getWindow().getDecorView())))).check(matches(isDisplayed()));
-        });
-    }
-
-
-    @Test
     public void testLaunchShare() {
         onView(withId(R.id.btn_share)).perform(click());
-        onView(withText("Hello! I would like to share with you my mood of the day from MoodTracker App.Today my Mood is...")).check(matches(isDisplayed()));
     }
 
 

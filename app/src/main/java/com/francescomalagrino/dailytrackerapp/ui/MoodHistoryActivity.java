@@ -1,13 +1,12 @@
 package com.francescomalagrino.dailytrackerapp.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.francescomalagrino.dailytrackerapp.R;
 import com.francescomalagrino.dailytrackerapp.adapter.MoodsAdapter;
@@ -16,7 +15,6 @@ import com.francescomalagrino.dailytrackerapp.data.SharedPreferencesHelper;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class MoodHistoryActivity extends AppCompatActivity {
 

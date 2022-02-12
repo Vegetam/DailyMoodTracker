@@ -1,11 +1,7 @@
 package com.francescomalagrino.dailytrackerapp.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.GestureDetectorCompat;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
@@ -14,19 +10,20 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GestureDetectorCompat;
+
 import com.francescomalagrino.dailytrackerapp.R;
 import com.francescomalagrino.dailytrackerapp.data.Mood;
 import com.francescomalagrino.dailytrackerapp.data.SharedPreferencesHelper;
 import com.francescomalagrino.dailytrackerapp.util.Constants;
 import com.google.firebase.analytics.FirebaseAnalytics;
-
 
 import java.util.Calendar;
 

@@ -8,4 +8,8 @@
     <string name="today">Today</string>
     <string name="days_ago">days ago</string>
     <string name="send_To" />
+    <string name="skip">Skip</string>
+    <string name="get_started">Get Started</string>
+    <string name="next">Next</string>
+
 </resources>

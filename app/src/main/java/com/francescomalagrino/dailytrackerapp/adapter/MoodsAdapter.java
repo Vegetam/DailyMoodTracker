@@ -1,8 +1,6 @@
 package com.francescomalagrino.dailytrackerapp.adapter;
 
 import android.content.Context;
-import android.provider.SyncStateContract;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
