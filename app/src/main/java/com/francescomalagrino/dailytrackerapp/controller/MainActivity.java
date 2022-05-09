@@ -1,4 +1,4 @@
-package com.francescomalagrino.dailytrackerapp.ui;
+package com.francescomalagrino.dailytrackerapp.controller;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -18,10 +18,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GestureDetectorCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.francescomalagrino.dailytrackerapp.R;
-import com.francescomalagrino.dailytrackerapp.data.Mood;
-import com.francescomalagrino.dailytrackerapp.data.SharedPreferencesHelper;
+import com.francescomalagrino.dailytrackerapp.model.Mood;
+import com.francescomalagrino.dailytrackerapp.ui.MoodViewModel;
 import com.francescomalagrino.dailytrackerapp.util.Constants;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -39,12 +40,11 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     private ImageButton shareAppButton;
     private GestureDetectorCompat mDetector;
     private RelativeLayout parentRelativeLayout;
-
-    private SharedPreferences mPreferences;
     public int currentDay;
     private int currentMoodIndex;
     private String currentComment;
     private  FirebaseAnalytics mFirebaseAnalytics;
+    private MoodViewModel mMoodsViewModel;
     private Mood mood = new Mood();
 
 
@@ -55,35 +55,38 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         setContentView(R.layout.activity_main);
         Log.d(TAG, "onCreate: MainActivity");
 
-
+        mMoodsViewModel = new ViewModelProvider(this).get(MoodViewModel.class);
         moodImageView = findViewById(R.id.my_mood);
         parentRelativeLayout = findViewById(R.id.parent_relative_layout);
         addCommentButton = findViewById(R.id.btn_add_comment);
-       moodHistoryButton = findViewById(R.id.btn_mood_history);
+        moodHistoryButton = findViewById(R.id.btn_mood_history);
         shareAppButton = findViewById(R.id.btn_share);
 
         mDetector = new GestureDetectorCompat(this, this);
-        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-       // int defaultDay = Calendar.getInstance().getTime().getDay();
+        // int defaultDay = Calendar.getInstance().getTime().getDay();
         currentDay =  Calendar.getInstance().getTime().getDay();
-       // Log.e("onCreate: ", currentDay + "");
-        currentMoodIndex = mPreferences.getInt(SharedPreferencesHelper.KEY_CURRENT_MOOD, 3);
-        currentComment = mPreferences.getString(SharedPreferencesHelper.KEY_CURRENT_COMMENT, "");
+        // Log.e("onCreate: ", currentDay + "");
+
+
+
+     //  currentMoodIndex = mPreferences.getInt(SharedPreferencesHelper.KEY_CURRENT_MOOD, 3);
+       mMoodsViewModel.getCurrentMood();
+      //  currentComment = mPreferences.getString(SharedPreferencesHelper.KEY_CURRENT_COMMENT, "");
 
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-
         changeUiForMood(currentMoodIndex);
         mood.setMoodStatus(currentMoodIndex);
         mood.setMoodDate(currentDay);
-        SharedPreferencesHelper.saveMood(mPreferences, mood);
+        mMoodsViewModel.insert(mood);
+        //SharedPreferencesHelper.saveMood(mPreferences, mood);
 
 
         //*****************************Add comment to the Mood********************************/
 
         addCommentButton.setOnClickListener(view -> {
-          //  Log.d(LOG_TAG, "Button clicked!");
+            //  Log.d(LOG_TAG, "Button clicked!");
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             final EditText editText = new EditText(MainActivity.this);
             editText.setId(R.id.commentEditText);
@@ -92,7 +95,8 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                     .setPositiveButton("CONFIRM", (dialog, which) -> {
                         if (!editText.getText().toString().isEmpty()) {
                             mood.setComment(editText.getText().toString());
-                            SharedPreferencesHelper.saveMood(mPreferences,mood);
+                           // SharedPreferencesHelper.saveMood(mPreferences,mood);
+                            mMoodsViewModel.insert(mood);
                         }
 
 
@@ -122,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
         //*Share your mood Button*/
         shareAppButton.setOnClickListener(v -> {
-         //   Log.d(LOG_TAG, "Button clicked!");
+            //   Log.d(LOG_TAG, "Button clicked!");
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             sendIntent.putExtra(Intent.EXTRA_TEXT, "Hello! I would like to share with you my mood of the day from MoodTracker App.Today my Mood is... ");
@@ -162,6 +166,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
     }
 
+
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         // Swiping up
@@ -171,7 +176,8 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                 changeUiForMood(currentMoodIndex);
                 mood.setMoodStatus(currentMoodIndex);
                 mood.setMoodDate(currentDay);
-                SharedPreferencesHelper.saveMood(mPreferences, mood);
+                mMoodsViewModel.insert(mood);
+              //  SharedPreferencesHelper.saveMood(mPreferences, mood);
 
             }
 
@@ -184,7 +190,8 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                 changeUiForMood(currentMoodIndex);
                 mood.setMoodStatus(currentMoodIndex);
                 mood.setMoodDate(currentDay);
-                SharedPreferencesHelper.saveMood(mPreferences, mood);
+                mMoodsViewModel.insert(mood);
+             //   SharedPreferencesHelper.saveMood(mPreferences, mood);
             }
         }
         return true;

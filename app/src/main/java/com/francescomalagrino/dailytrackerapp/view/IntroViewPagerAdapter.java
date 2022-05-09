@@ -1,4 +1,4 @@
-package com.francescomalagrino.dailytrackerapp.adapter;
+package com.francescomalagrino.dailytrackerapp.view;
 
 import android.content.Context;
 import android.view.View;

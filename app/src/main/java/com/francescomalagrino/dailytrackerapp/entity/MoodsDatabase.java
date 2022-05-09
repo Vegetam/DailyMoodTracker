@@ -1,0 +1,40 @@
+package com.francescomalagrino.dailytrackerapp.entity;
+import android.content.Context;
+
+import androidx.annotation.NonNull;
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.sqlite.db.SupportSQLiteDatabase;
+
+
+import com.francescomalagrino.dailytrackerapp.dao.MoodDao;
+import com.francescomalagrino.dailytrackerapp.model.Mood;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+@Database(entities = {Mood.class}, version = 1, exportSchema = false)
+public abstract class MoodsDatabase extends RoomDatabase {
+
+    public abstract MoodDao mooddDao();
+
+    private static volatile MoodsDatabase INSTANCE;
+    private static final int NUMBER_OF_THREADS = 4;
+    public static final ExecutorService databaseWriteExecutor =
+            Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+
+    public static MoodsDatabase getDatabase(final Context context) {
+        if (INSTANCE == null) {
+            synchronized (MoodsDatabase.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
+                            MoodsDatabase.class, "Moods_database")
+                            .build();
+                }
+            }
+        }
+        return INSTANCE;
+    }
+}

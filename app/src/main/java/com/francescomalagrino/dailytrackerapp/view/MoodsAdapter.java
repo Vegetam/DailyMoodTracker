@@ -1,4 +1,4 @@
-package com.francescomalagrino.dailytrackerapp.adapter;
+package com.francescomalagrino.dailytrackerapp.view;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,22 +14,23 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.francescomalagrino.dailytrackerapp.R;
-import com.francescomalagrino.dailytrackerapp.data.Mood;
+import com.francescomalagrino.dailytrackerapp.model.Mood;
 import com.francescomalagrino.dailytrackerapp.util.Constants;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 
 public class MoodsAdapter extends RecyclerView.Adapter<MoodsAdapter.MoodViewHolder> {
 
     private static final String TAG = "MoodsAdapter";
     private Context mContext;
-    private ArrayList<Mood> mMoods;
+    private List<Mood> mMoods;
 
     //*** Constructor*
-    public MoodsAdapter(Context context, ArrayList<Mood> moods) {
+    public MoodsAdapter(Context context, List<Mood> moods) {
         this.mContext = context;
         this.mMoods = moods;
 
@@ -47,7 +48,7 @@ public class MoodsAdapter extends RecyclerView.Adapter<MoodsAdapter.MoodViewHold
     {
         Mood mood = mMoods.get(i);
         Date currentDate = Calendar.getInstance().getTime();
-       // Log.e("mood", currentDate.getDay() + "-" + mood.getMoodDate() + "-" + i);
+        // Log.e("mood", currentDate.getDay() + "-" + mood.getMoodDate() + "-" + i);
         if(currentDate.getDay() == mood.getMoodDate()) {
             moodViewHolder.daysTextView.setText(R.string.today);
         } else if(currentDate.getDay() -1 == mood.getMoodDate()){
